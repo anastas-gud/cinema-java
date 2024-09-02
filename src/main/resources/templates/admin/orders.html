@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div class="header_div">
+        <div style="margin-left: 3%">
+            <a th:href="@{/films}" style="text-decoration:none; color: black">
+                <div class="div_logo">
+                    <p class="logo_cinema">CINEMA</p>
+                    <p class="logo_centre">CENTRE</p>
+                </div>
+            </a>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/films}">
+                <button class="button_films" type="submit">Фильмы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/cinema}">
+                <button class="button_cinema" type="submit">Кинотеатры</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/orders}">
+                <button class="button_orders" type="submit">Заказы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/report}">
+                <button class="button_report" type="submit">Отчет</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/users}">
+                <button class="button_users" type="submit">Пользователи</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('USER')">
+            <form method="get" th:action="@{/account/orders}">
+                <button class="button_users" type="submit">Мои билеты</button>
+            </form>
+        </div>
+        <div style="margin-right: 3%">
+            <form method="get" th:action="@{/account}">
+                <button class="button_account" type="submit">Личный кабинет</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <table style="width: 100%; border-collapse: collapse; border: 2px solid white;">
+        <tr style="font-size: 19px; font-weight: bold;">
+            <td style="padding: 3px; border: 1px solid;">Идентификатор</td>
+            <td style="padding: 3px; border: 1px solid">Дата/время заказа</td>
+            <td style="padding: 3px; border: 1px solid">Пользователь</td>
+            <td style="padding: 3px; border: 1px solid">Стоимость</td>
+        </tr>
+        <tr th:each="order : ${orders}">
+            <td style="padding: 3px; border: 1px solid">
+                <a th:href="@{'/admin/order/'+${order.getId()}}" th:text="${order.getId()}"></a>
+            </td>
+            <td th:text="${order.getDate()+'/'+order.getTime()}" style="padding: 3px; border: 1px solid"></td>
+            <td style="padding: 3px; border: 1px solid">
+                <a th:href="@{'/admin/order/user/'+${order.getUser().getId()}}" th:text="${order.getUser().getLogin()}"></a>
+            </td>
+            <td th:text="${T(ru.gudoshnikova.mainproject.util.Util).getTotalCost(order)}" style="padding: 3px; border: 1px solid"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

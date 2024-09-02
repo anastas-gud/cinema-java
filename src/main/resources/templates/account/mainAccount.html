@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div class="header_div">
+        <div style="margin-left: 3%">
+            <a th:href="@{/films}" style="text-decoration:none; color: black">
+                <div class="div_logo">
+                    <p class="logo_cinema">CINEMA</p>
+                    <p class="logo_centre">CENTRE</p>
+                </div>
+            </a>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/films}">
+                <button class="button_films" type="submit">Фильмы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/cinema}">
+                <button class="button_cinema" type="submit">Кинотеатры</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/orders}">
+                <button class="button_orders" type="submit">Заказы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/report}">
+                <button class="button_report" type="submit">Отчет</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/users}">
+                <button class="button_users" type="submit">Пользователи</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('USER')">
+            <form method="get" th:action="@{/account/orders}">
+                <button class="button_users" type="submit">Мои билеты</button>
+            </form>
+        </div>
+        <div style="margin-right: 3%">
+            <form method="get" th:action="@{/account}">
+                <button class="button_account" type="submit">Личный кабинет</button>
+            </form>
+        </div>
+    </div>
+    <header class="header_account">
+        <div class="div_in_header1">
+            <p th:text="${user.getLogin()}" style="position: absolute; font-size: 30px; margin-top: 1%"></p>
+        </div>
+        <div style="display: flex; flex-direction: row; width: 420px; margin-top: 1%">
+            <div class="div_in_header2">
+                <a th:href="@{/account/orders}" style="color: #1A2238">Мои билеты</a>
+            </div>
+            <div class="div_in_header2">
+                <a th:href="@{/account/edit}" style="color: #1A2238">Редактировать профиль</a>
+            </div>
+            <form th:method="POST" th:action="@{/logout}">
+                <input class="div_in_header2" type="submit" value="Выйти" style="background-color: #1A2238; border: solid #1A2238; color: #FF6A3D; border-radius: 4px; margin-top: 9%">
+            </form>
+        </div>
+    </header>
+    <br>
+    <hr style="border: solid #1A2238 1px">
+    <div class="card_account">
+        <div class="card_info">
+            <p style="font-weight: bold">Карта БОНУС</p>
+            <p th:text="${'Уровень: ' + user.getCard().getStatus()}"></p>
+            <p th:text="${'Кешбек: ' + user.getCard().getCashback() + '% бонусами на счет'}"></p>
+        </div>
+        <div class="card_card">
+            <img th:if="${user.getCard().getImage() != null}" th:src="@{'/cards/'+${user.getCard().getImage()}}" alt="" width="522px" height="326px" style="border-radius: 30px">
+        </div>
+        <div class="for_bonuses">
+            <div class="bonuses">
+                <div th:if="${user.getBonuses()==0.0}">
+                    <p class="p_bonuses">0</p>
+                    <p class="p_bonuses">бонусов</p>
+                </div>
+                <div th:if="${user.getBonuses()>0.0}">
+                    <p class="p_bonuses" th:text="${user.getBonuses()}"></p>
+                    <p class="p_bonuses">бонусов</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

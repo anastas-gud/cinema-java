@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div class="header_div">
+  <div style="margin-left: 3%">
+    <a th:href="@{/films}" style="text-decoration:none; color: black">
+      <div class="div_logo">
+        <p class="logo_cinema">CINEMA</p>
+        <p class="logo_centre">CENTRE</p>
+      </div>
+    </a>
+  </div>
+  <div sec:authorize="hasRole('ADMIN')">
+    <form method="get" th:action="@{/admin/films}">
+      <button class="button_films" type="submit">Фильмы</button>
+    </form>
+  </div>
+  <div sec:authorize="hasRole('ADMIN')">
+    <form method="get" th:action="@{/admin/cinema}">
+      <button class="button_cinema" type="submit">Кинотеатры</button>
+    </form>
+  </div>
+  <div sec:authorize="hasRole('ADMIN')">
+    <form method="get" th:action="@{/admin/orders}">
+      <button class="button_orders" type="submit">Заказы</button>
+    </form>
+  </div>
+  <div sec:authorize="hasRole('ADMIN')">
+    <form method="get" th:action="@{/admin/report}">
+      <button class="button_report" type="submit">Отчет</button>
+    </form>
+  </div>
+  <div sec:authorize="hasRole('ADMIN')">
+    <form method="get" th:action="@{/admin/users}">
+      <button class="button_users" type="submit">Пользователи</button>
+    </form>
+  </div>
+  <div sec:authorize="hasRole('USER')">
+    <form method="get" th:action="@{/account/orders}">
+      <button class="button_users" type="submit">Мои билеты</button>
+    </form>
+  </div>
+  <div style="margin-right: 3%">
+    <form method="get" th:action="@{/account}">
+      <button class="button_account" type="submit">Личный кабинет</button>
+    </form>
+  </div>
+</div>
+<br>
+<form th:object="${order}" th:action="@{/orders/decoration}" method="post">
+  <div class="div_process">
+    <div style="border: solid dimgrey 2px; width: 40%; padding: 10px 10px 10px 10px">
+      <div>
+        <h2 th:text="${order.getFilmSession().getFilm().getTitle()}"></h2>
+        <span th:text="${order.getFilmSession().getHall().getCinema().getName()}"></span>&nbsp;&nbsp;&nbsp;
+        <span th:text="${'Зал: ' + order.getFilmSession().getHall().getName()}"></span><br>
+        <p th:text="${order.getFilmSession().getHall().getCinema().getAddress()}"></p>
+        <h3 th:text="${#temporals.format(order.getFilmSession().getStartDate(), 'dd.MM.yyyy') + ', ' + order.getFilmSession().getStartTime()}"></h3>
+      </div>
+      <div style="margin-top: 10%">
+        <p>Ваш заказ:</p>
+        <div th:each="seat: ${order.getSeats()}">
+          <p th:text="${'Ряд - ' + seat.getSeat().getRow() + ', Место: ' + seat.getSeat().getSeat() + '.............................................' + order.getFilmSession().getPrice()}"></p>
+        </div>
+        <hr>
+        <p th:if="${!totalCost.equals(order.getFilmSession().getPrice())}"
+           th:text="${'Списано баллов:...................................................' + points}"></p>
+        <p th:text="${'Начислится баллов:..............................................' + pointForBalance}"></p>
+        <hr>
+        <p th:text="${'Итого: ' + totalCost}"></p>
+      </div>
+    </div>
+    <div style="border: solid dimgrey 2px; width: 40%; padding: 10px 10px 10px 10px">
+      <p>Данные для получения заказа: </p>
+      <input style="width: 70%; height: 12%" type="text" th:field="*{user.email}"
+             name="email" id="email" placeholder="Введите ваш email">
+      <label for="email"></label>
+      <input type="hidden" th:field="*{filmSession}" id="filmSession" name="filmSession">
+      <input type="hidden" th:field="*{seats}" id="seats" name="seats">
+      <input type="hidden" th:field="*{user}" id="user" name="user">
+      <input type="hidden" th:value="${totalCost}" id="totalCost" name="totalCost">
+      <input type="hidden" th:value="${pointForBalance}" id="pointForBalance" name="pointForBalance">
+    </div>
+  </div>
+  <button class="button_decoration" type="submit">Оформить</button>
+</form>
+<form th:action="@{/orders/process}" method="post" th:object="${order}">
+  <input type="hidden" name="filmSessionId" th:value="${order.getFilmSession().getId()}">
+  <div th:each="seat: ${order.getSeats()}">
+    <input type="hidden" name="states" id="states" th:value="${seat.getId()}">
+  </div>
+  <input type="hidden" th:value="${points}" name="points" id="points">
+  <input type="submit" value="Назад" class="button_back">
+</form>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div>
+        <div>
+            <div class="header_div">
+                <div style="margin-left: 3%">
+                    <a th:href="@{/films}" style="text-decoration:none; color: black">
+                        <div class="div_logo">
+                            <p class="logo_cinema">CINEMA</p>
+                            <p class="logo_centre">CENTRE</p>
+                        </div>
+                    </a>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <form method="get" th:action="@{/admin/films}">
+                        <button class="button_films" type="submit">Фильмы</button>
+                    </form>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <form method="get" th:action="@{/admin/cinema}">
+                        <button class="button_cinema" type="submit">Кинотеатры</button>
+                    </form>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <form method="get" th:action="@{/admin/orders}">
+                        <button class="button_orders" type="submit">Заказы</button>
+                    </form>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <form method="get" th:action="@{/admin/report}">
+                        <button class="button_report" type="submit">Отчет</button>
+                    </form>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <form method="get" th:action="@{/admin/users}">
+                        <button class="button_users" type="submit">Пользователи</button>
+                    </form>
+                </div>
+                <div sec:authorize="hasRole('USER')">
+                    <form method="get" th:action="@{/account/orders}">
+                        <button class="button_users" type="submit">Мои билеты</button>
+                    </form>
+                </div>
+                <div style="margin-right: 3%">
+                    <form method="get" th:action="@{/account}">
+                        <button class="button_account" type="submit">Личный кабинет</button>
+                    </form>
+                </div>
+            </div>
+            <div class="date_selection">
+                <div class="date_selection_button">
+                    <form method="POST" th:action="@{/films}" th:object="${startDate}">
+                        <input name="startDate" type="hidden" th:value="${today}">
+                        <button type="submit" style="background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">Сегодня</button>
+                    </form>
+                </div>
+                <div class="date_selection_button">
+                    <form method="POST" th:action="@{/films}" th:object="${startDate}">
+                        <input name="startDate" type="hidden" th:value="${tomorrow}">
+                        <button type="submit" style="background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">Завтра</button>
+                    </form>
+                </div>
+                <div class="date_selection_button">
+                    <form method="POST" th:action="@{/films}" th:object="${startDate}">
+                        <input name="startDate" type="date" th:min="${minDate}" style="background-color: azure" id="selectedDate" required>
+                        <label for="selectedDate"></label>
+                        <button type="submit" style="background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">Выбрать</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="div_afisha">
+            <p class="afisha" th:if="${startDate} == null">Афиша кино</p>
+            <p class="afisha" th:if="${startDate} != null"
+               th:text="'Афиша кино на ' + ${#temporals.format(startDate, 'dd.MM.yyyy')}"></p>
+        </div>
+        <div class="films" style="margin-top: -1%">
+            <div style="max-width: 230px; background-color: mintcream; border: solid black 3px; height: 420px; margin-bottom: 5px" th:each="film : ${films}">
+                <div style="border: #1A2238">
+                    <div>
+                        <img th:if="${film.getPosterFile() != null}" th:src="@{'/posters/'+${film.getPosterFile()}}" alt="" width="230px" height="328.95px">
+                    </div>
+                    <div style="margin-top: -25px">
+                        <div>
+                            <h4 style="font-size: 17px" th:text="${film.getTitle()}"></h4>
+                            <p style="margin-top: -20px; font-size: 14px"><span>Жанр: </span><span th:text="${film.getGenre()}"></span></p>
+                            <p style="margin-top: -18px; font-size: 14px"><span>Год выхода: </span><span th:text="${film.getStartRental().getYear()}"></span></p>
+                            <p style="margin-top: -19px; font-size: 14px"><span>Страна: </span><span th:text="${film.getCountry()}"></span></p>
+                        </div>
+                        <div style="margin-top: -14px">
+                            <form th:action="@{'/films/get/' + ${film.getId()}}" method="post">
+                                <input type="hidden" th:if="${startDate}==null" th:value="${today}" name="startDate">
+                                <input type="hidden" th:if="${startDate}!=null" th:value="${startDate}" name="startDate">
+                                <button type="submit" style="display: block; margin-right: auto; margin-left: auto;
+                                        background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">Подробнее</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

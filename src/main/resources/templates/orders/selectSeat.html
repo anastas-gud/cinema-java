@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div class="header_div">
+    <div style="margin-left: 3%">
+        <a th:href="@{/films}" style="text-decoration:none; color: black">
+            <div class="div_logo">
+                <p class="logo_cinema">CINEMA</p>
+                <p class="logo_centre">CENTRE</p>
+            </div>
+        </a>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="get" th:action="@{/admin/films}">
+            <button class="button_films" type="submit">Фильмы</button>
+        </form>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="get" th:action="@{/admin/cinema}">
+            <button class="button_cinema" type="submit">Кинотеатры</button>
+        </form>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="get" th:action="@{/admin/orders}">
+            <button class="button_orders" type="submit">Заказы</button>
+        </form>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="get" th:action="@{/admin/report}">
+            <button class="button_report" type="submit">Отчет</button>
+        </form>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="get" th:action="@{/admin/users}">
+            <button class="button_users" type="submit">Пользователи</button>
+        </form>
+    </div>
+    <div sec:authorize="hasRole('USER')">
+        <form method="get" th:action="@{/account/orders}">
+            <button class="button_users" type="submit">Мои билеты</button>
+        </form>
+    </div>
+    <div style="margin-right: 3%">
+        <form method="get" th:action="@{/account}">
+            <button class="button_account" type="submit">Личный кабинет</button>
+        </form>
+    </div>
+</div>
+<div>
+    <h1 th:text="${filmSession.getFilm().getTitle()}"></h1>
+    <span th:text="${filmSession.getHall().getCinema().getName()}"></span>&nbsp;&nbsp;&nbsp;
+    <span th:text="${'Зал: ' + filmSession.getHall().getName()}"></span><br>
+    <span th:text="${#temporals.format(filmSession.getStartDate(), 'dd.MM.yyyy') + ', ' + filmSession.getStartTime()}"></span>
+    <hr>
+    <div>
+        <div style="text-align: center">
+            <h3>Экран</h3>
+        </div>
+        <hr>
+        <div style="width: 100%;">
+            <form th:action="@{/orders/process}" method="post" th:object="${seats}">
+                <input type="hidden" name="filmSessionId" th:value="${filmSession.id}">
+                <table style="margin-right: auto; margin-left: auto">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr th:each="rowNumber, rowStat: ${#numbers.sequence(1, filmSession.getHall().getRowsCount())}">
+                        <td th:each="placeNumber, placeStat: ${#numbers.sequence(1, filmSession.getHall().getPlacesCount())}">
+                            <span th:if="${placeNumber==1}">&nbsp;&nbsp;
+                                <span th:if="${rowNumber<10}"><span th:text="${rowNumber + '    '}"></span></span>
+                                <span th:if="${rowNumber>=10}" th:text="${rowNumber}"></span>&nbsp;&nbsp;
+                            </span>
+                            <input type="checkbox" th:id="'seat_' + ${rowStat.index} + '_' + ${placeStat.index}"
+                                   th:if="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getSeat().isExist()}==false"
+                                   th:autocomplete="off" th:value="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getId()}"
+                                   name="states" disabled>
+                            <label th:for="'seat_' + ${rowStat.index} + '_' + ${placeStat.index}"
+                                   th:if="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getSeat().isExist()}==false"
+                                   class="checkbox-not-exist">
+                            </label>
+                            <input type="checkbox" th:id="'seat_' + ${rowStat.index} + '_' + ${placeStat.index}"
+                                   th:if="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).isBooked()==false &&
+                                            T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getSeat().isExist()==true}"
+                                   th:autocomplete="off" th:value="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getId()}"
+                                   name="states">
+                            <label th:for="'seat_' + ${rowStat.index} + '_' + ${placeStat.index}"
+                                   th:if="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).isBooked()==false &&
+                                            T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getSeat().isExist()==true}"
+                                   class="checkbox-not-booked">
+                            </label>
+                            <input type="checkbox" th:id="'seat_' + ${rowStat.index} + '_' + ${placeStat.index}"
+                                   th:if="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).isBooked()==true &&
+                                            T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getSeat().isExist()==true}"
+                                   th:autocomplete="off" th:value="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getId()}"
+                                   name="states" disabled>
+                            <label th:for="'seat_' + ${rowStat.index} + '_' + ${placeStat.index}"
+                                   th:if="${T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).isBooked()==true &&
+                                            T(ru.gudoshnikova.mainproject.util.Util).getSeatByRowAndSeat(filmSessionSeats, rowNumber, placeNumber, filmSession.getHall()).getSeat().isExist()==true}"
+                                   class="checkbox-booked">
+                            </label>
+                            <input type="hidden" name="points" id="points" th:value="0">
+                        </td>
+                    </tr>
+                </table>
+                <button type="submit" style="margin-left: auto; margin-right: auto; display: block;background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">К оформлению</button>
+                <div th:if="${error}">
+                    <p th:text="${error}" style="text-align: center; width: 100%; color: crimson"></p>
+                </div>
+            </form>
+        </div>
+        <form th:action="@{'/films/get/' + ${filmSession.getFilm().getId()}}" method="post">
+            <input type="hidden" name="startDate" id="startDate" th:value="${filmSession.getStartDate()}">
+            <input type="submit" value="Назад" style="width: 10%;margin-top: -1.75%;display: block;background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">
+        </form>
+    </div>
+</div>
+</body>
+</html>

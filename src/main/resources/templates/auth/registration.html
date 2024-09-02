@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div style="text-align: center">
+    <div style="margin-top: 3%;width: 100%;background-color: #1A2238;height: 118px">
+        <div style="width: 18%; margin-left: 41%; padding-top: 1.005%">
+            <div style="border: solid #FF6A3D 1px; width: 166px; height: 82px;margin-top: 7px">
+                <p style="margin-top: 4px; display: block; margin-left: 76px; font-size: 44px;color: #FF6A3D">CINEMA</p>
+                <p style="display: block; margin-top: -52px; margin-left: 111px; font-size: 26px; color: white">CENTRE</p>
+            </div>
+        </div>
+    </div>
+    <h3>Регистрация нового пользователя</h3>
+    <form method="POST" style="width: 100%; margin-top: 2%" th:action="@{/auth/registration}" th:object="${user}">
+        <div style="color: crimson; position: absolute; padding-left: 43%; margin-top: -3%" th:if="${#fields.hasErrors('login')}">
+            <p th:errors="*{login}"></p>
+        </div>
+        <div style="color: crimson; position: absolute; padding-left: 43%; margin-top: -4%" th:if="${#fields.hasErrors('password')}">
+            <p th:errors="*{password}"></p>
+        </div>
+        <div style="color: crimson; position: absolute; padding-left: 43%; margin-top: -4%" th:if="${#fields.hasErrors('firstName')}">
+            <p th:errors="*{firstName}"></p>
+        </div>
+        <div style="color: crimson; position: absolute; padding-left: 43%; margin-top: -4%" th:if="${#fields.hasErrors('lastName')}">
+            <p th:errors="*{lastName}"></p>
+        </div>
+        <div style="color: crimson; position: absolute; padding-left: 43%; margin-top: -4%" th:if="${#fields.hasErrors('email')}">
+            <p th:errors="*{email}"></p>
+        </div>
+        <div style="color: crimson; position: absolute; padding-left: 43%; margin-top: -4%" th:if="${#fields.hasErrors('birthDate')}">
+            <p th:errors="*{birthDate}"></p>
+        </div>
+        <div>
+            <div>
+                <div>
+                    <label for="login">Логин</label>
+                    <input th:field="*{login}" name="login" type="text" id="login" placeholder="Введите логин" required>
+                </div>
+            </div>
+            <br>
+            <div>
+                <div>
+                    <label for="password">Пароль</label>
+                    <input name="password" type="password" id="password" placeholder="Введите пароль" required>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div>
+            <div>
+                <div>
+                    <label for="firstName">Имя</label>
+                    <input th:field="*{firstName}" name="firstName" type="text" id="firstName" placeholder="Введите имя" required>
+                </div>
+            </div>
+            <br>
+            <div>
+                <div>
+                    <label for="lastName">Фамилия</label>
+                    <input th:field="*{lastName}" name="lastName" type="text" id="lastName" placeholder="Введите фамилию" required>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div>
+            <div>
+                <div>
+                    <label for="email">Email</label>
+                    <input th:field="*{email}" name="email" type="email" id="email" placeholder="Введите email" required>
+                </div>
+            </div>
+            <br>
+            <div>
+                <div>
+                    <label for="birthDate">Дата рождения</label>
+                    <input name="birthDate" type="date" id="birthDate" th:max="${date}"
+                           placeholder="Введите дату рождения" required>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit" style="text-align: center; margin-top: 1.5%; width: 22%;background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">Зарегистрироваться</button>
+        </div>
+    </form>
+    <form th:action="@{/auth/login}" method="get" style="text-align: center; margin-top: 1.5%">
+        <input type="submit" value="Назад" style="width: 22%; background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">
+    </form>
+</div>
+</body>
+</html>

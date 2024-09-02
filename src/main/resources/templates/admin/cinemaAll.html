@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div class="header_div">
+        <div style="margin-left: 3%">
+            <a th:href="@{/films}" style="text-decoration:none; color: black">
+                <div class="div_logo">
+                    <p class="logo_cinema">CINEMA</p>
+                    <p class="logo_centre">CENTRE</p>
+                </div>
+            </a>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/films}">
+                <button class="button_films" type="submit">Фильмы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/cinema}">
+                <button class="button_cinema" type="submit">Кинотеатры</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/orders}">
+                <button class="button_orders" type="submit">Заказы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/report}">
+                <button class="button_report" type="submit">Отчет</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/users}">
+                <button class="button_users" type="submit">Пользователи</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('USER')">
+            <form method="get" th:action="@{/account/orders}">
+                <button class="button_users" type="submit">Мои билеты</button>
+            </form>
+        </div>
+        <div style="margin-right: 3%">
+            <form method="get" th:action="@{/account}">
+                <button class="button_account" type="submit">Личный кабинет</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <form th:action="@{/admin/cinema/add}" method="get">
+            <input class="admin_add_film_button" type="submit" value="Добавить кинотеатр">
+        </form>
+    </div>
+    <table th:if="${!cinema.isEmpty()}" th:each="cinem : ${cinema}" style="border: solid black 3px" width="100%">
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <a th:href="@{'/admin/cinema/'+${cinem.getId()}}"><h3 th:text="${cinem.getName()}"></h3></a>
+                <p th:text="${cinem.getCity()} + ' - ' + ${cinem.getAddress()}"></p>
+            </td>
+            <td>
+                <div style="display: flex; flex-direction: row; justify-content: end">
+                    <form th:action="@{'/admin/cinema/edit/'+ ${cinem.getId()}}" method="get">
+                        <input type="submit" value="Редактировать кинотеатр" style="color: white"
+                               class="admin_cinema_buttons">
+                    </form>
+                    <form th:action="@{'/admin/cinema/delete/'+ ${cinem.getId()}}" th:method="delete">
+                        <input type="submit" value="Удалить кинотеатр" class="admin_cinema_buttons" style="color: #FF6A3D"
+                               onclick="return confirm('Вы действительно хотите удалить кинотеатр?');">
+                    </form>
+                </div>
+            </td>
+        </tr>
+        <br>
+    </table>
+</div>
+</body>
+</html>

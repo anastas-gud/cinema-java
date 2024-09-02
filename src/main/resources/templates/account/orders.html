@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div class="header_div">
+        <div style="margin-left: 3%">
+            <a th:href="@{/films}" style="text-decoration:none; color: black">
+                <div class="div_logo">
+                    <p class="logo_cinema">CINEMA</p>
+                    <p class="logo_centre">CENTRE</p>
+                </div>
+            </a>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/films}">
+                <button class="button_films" type="submit">Фильмы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/cinema}">
+                <button class="button_cinema" type="submit">Кинотеатры</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/orders}">
+                <button class="button_orders" type="submit">Заказы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/report}">
+                <button class="button_report" type="submit">Отчет</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/users}">
+                <button class="button_users" type="submit">Пользователи</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('USER')">
+            <form method="get" th:action="@{/account/orders}">
+                <button class="button_users" type="submit">Мои билеты</button>
+            </form>
+        </div>
+        <div style="margin-right: 3%">
+            <form method="get" th:action="@{/account}">
+                <button class="button_account" type="submit">Личный кабинет</button>
+            </form>
+        </div>
+    </div>
+    <h2 style="text-align: center">Мои билеты</h2>
+    <div th:if="${!T(ru.gudoshnikova.mainproject.util.Util).getFutureOrders(user.getOrders()).isEmpty()}">
+        <h3>Предстоящие сеансы</h3>
+        <hr>
+        <div th:each="order: ${T(ru.gudoshnikova.mainproject.util.Util).getFutureOrders(user.getOrders())}">
+            <div th:each="seat: ${order.getSeats()}" class="orders">
+                <div>
+                    <img style="margin-left: 13%" th:if="${order.getFilmSession().getFilm().getPosterFile() != null}" th:src="'/posters/' + ${order.getFilmSession().getFilm().getPosterFile()}" alt="" width="100px" height="147.02px">
+                </div>
+                <div>
+                    <h3 th:text="${order.getFilmSession().getFilm().getTitle()}"></h3>
+                    <p th:text="${order.getFilmSession().getStartDate()+', '+order.getFilmSession().getStartTime()}"></p>
+                    <p th:text="${'Ряд: ' + seat.getSeat().getRow()+', Место:'+seat.getSeat().getSeat()}"></p>
+                </div>
+                <div style="margin-right: 5%">
+                    <p th:text="${order.getFilmSession().getHall().getCinema().getName()}"></p>
+                    <p th:text="${order.getFilmSession().getHall().getCinema().getAddress()}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${!T(ru.gudoshnikova.mainproject.util.Util).getPastOrders(user.getOrders()).isEmpty()}">
+        <h3>Прошедшие сеансы</h3>
+        <hr>
+        <div th:each="order: ${T(ru.gudoshnikova.mainproject.util.Util).getPastOrders(user.getOrders())}">
+            <div th:each="seat: ${order.getSeats()}" class="orders">
+                <div>
+                    <img style="margin-left: 13%" th:if="${order.getFilmSession().getFilm().getPosterFile() != null}" th:src="'/posters/' + ${order.getFilmSession().getFilm().getPosterFile()}" alt="" width="100px" height="147.02px">
+                </div>
+                <div>
+                    <h3 th:text="${order.getFilmSession().getFilm().getTitle()}"></h3>
+                    <p th:text="${order.getFilmSession().getStartDate()+', '+order.getFilmSession().getStartTime()}"></p>
+                    <p th:text="${'Ряд: ' + seat.getSeat().getRow()+', Место:'+seat.getSeat().getSeat()}"></p>
+                </div>
+                <div style="margin-right: 5%">
+                    <p th:text="${order.getFilmSession().getHall().getCinema().getName()}"></p>
+                    <p th:text="${order.getFilmSession().getHall().getCinema().getAddress()}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${T(ru.gudoshnikova.mainproject.util.Util).getPastOrders(user.getOrders()).isEmpty()
+    && T(ru.gudoshnikova.mainproject.util.Util).getFutureOrders(user.getOrders()).isEmpty()}" style="text-align: center">
+        <h3>Вы еще не покупали билеты:(</h3>
+        <a th:href="@{/films}">За покупками</a>
+    </div>
+</div>
+</body>
+</html>

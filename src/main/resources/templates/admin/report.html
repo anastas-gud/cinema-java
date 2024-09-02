@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div class="header_div">
+        <div style="margin-left: 3%">
+            <a th:href="@{/films}" style="text-decoration:none; color: black">
+                <div class="div_logo">
+                    <p class="logo_cinema">CINEMA</p>
+                    <p class="logo_centre">CENTRE</p>
+                </div>
+            </a>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/films}">
+                <button class="button_films" type="submit">Фильмы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/cinema}">
+                <button class="button_cinema" type="submit">Кинотеатры</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/orders}">
+                <button class="button_orders" type="submit">Заказы</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/report}">
+                <button class="button_report" type="submit">Отчет</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="get" th:action="@{/admin/users}">
+                <button class="button_users" type="submit">Пользователи</button>
+            </form>
+        </div>
+        <div sec:authorize="hasRole('USER')">
+            <form method="get" th:action="@{/account/orders}">
+                <button class="button_users" type="submit">Мои билеты</button>
+            </form>
+        </div>
+        <div style="margin-right: 3%">
+            <form method="get" th:action="@{/account}">
+                <button class="button_account" type="submit">Личный кабинет</button>
+            </form>
+        </div>
+    </div>
+    <div style="text-align: center">
+        <div>
+            <form method="POST" th:action="@{/admin/report}" th:object="${datePeriod}">
+                <p style="font-size: 23px">Вывести результаты продаж за период:</p>
+                <div style="display: flex; flex-direction: row; justify-content: center">
+                    <div>
+                        <p style="margin-right: 20px">с:</p>
+                    </div>
+                    <div>
+                        <div style="margin-top: 13px; margin-right: 40px">
+                            <input name="startDate" type="date" id="startDate" required>
+                        </div>
+                    </div>
+                    <div>
+                        <p style="margin-right: 20px">по:</p>
+                    </div>
+                    <div>
+                        <div style="margin-top: 13px">
+                            <input name="endDate" type="date" id="endDate" required>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" style="width: 350px;background-color: #1A2238;border: solid #1A2238;color: white;border-radius: 4px">Отобразить</button>
+                </div>
+            </form>
+            <table th:if="${totalCost} != null" style="margin-left: auto; margin-right: auto;
+                    margin-top: 2%;border: 2px solid white; width: 600px">
+                <thead>
+                <tr>
+                    <th scope="col">Количетсво билетов</th>
+                    <th scope="col">Общая стоимость</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${totalTickets}" style="padding: 3px; border: 1px solid"></td>
+                    <td th:text="${totalCost}" style="padding: 3px; border: 1px solid"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${totalTickets} == 0">
+                <p>Не продано ни одного билета в данном периоде</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles/styleSeat.css">
+</head>
+<body>
+<div>
+    <div style="margin-top: 3%;width: 100%;background-color: #1A2238;height: 118px">
+        <div style="width: 18%; margin-left: 41%; padding-top: 1.005%">
+            <div style="border: solid #FF6A3D 1px; width: 166px; height: 82px;margin-top: 7px">
+                <p style="margin-top: 4px; display: block; margin-left: 76px; font-size: 44px;color: #FF6A3D">CINEMA</p>
+                <p style="display: block; margin-top: -52px; margin-left: 111px; font-size: 26px; color: white">CENTRE</p>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 5%">
+        <div>
+            <form method="post" th:action="@{/auth/login}">
+                <br>
+                <div style="text-align: center">
+                    <div>
+                        <small id="usernameHelp">Введите логин</small>
+                        <input name="username" type="text" id="inputUsername"
+                               placeholder="Логин" required
+                               aria-describedby="usernameHelp"/>
+                        <label for="inputUsername"></label>
+                    </div>
+                    <br>
+                    <div>
+                        <small id="passwordHelp">Введите пароль</small>
+                        <input name="password" type="password" id="inputPassword"
+                               placeholder="Пароль" required>
+                        <label for="inputPassword"></label>
+                    </div>
+                    <br>
+                    <div th:if="${param.error}">
+                        <div style="color: crimson">
+                            <p style="float: inherit">Неверный логин/пароль</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div>
+                        <button style="width: 22%;background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px" type="submit" >Войти</button>
+                    </div>
+                </div>
+
+            </form>
+            <form th:action="@{/auth/registration}" method="get" style="text-align: center; margin-top: 1.5%">
+                <input type="submit" value="Зарегистрироваться" style="width: 22%; background-color: #1A2238; border: solid #1A2238; color: white; border-radius: 4px">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
